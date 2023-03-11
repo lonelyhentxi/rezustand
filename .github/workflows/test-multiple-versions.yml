@@ -1,0 +1,59 @@
+name: Test Multiple Versions
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+          cache: pnpm
+      - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+      - run: pnpm install --frozen-lockfile --check-files
+      - name: Test Build # we don't have any other workflows to test build
+        run: pnpm build
+      - name: Test Default
+        run: pnpm test:ci
+
+  test_matrix:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        react:
+          - 16.8.0
+          - 17.0.0
+          - 18.0.0
+          - 18.1.0
+          - 18.2.0
+          - 18.3.0-next-49f741046-20230305
+          - 0.0.0-experimental-49f741046-20230305
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+          cache: pnpm
+      - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+      - run: pnpm install --frozen-lockfile --check-files
+      - name: Install legacy testing-library
+        if: ${{ startsWith(matrix.react, '16.') || startsWith(matrix.react, '17.') }}
+        run: pnpm add -D @testing-library/react@12.1.4
+      - name: Patch for React 16
+        if: ${{ startsWith(matrix.react, '16.') }}
+        run: |
+          sed -i~ '1s/^/import React from "react";/' tests/*.tsx
+          sed -i~ 's/"jsx": "react-jsx"/"jsx": "react"/' tsconfig.json
+          sed -i~ 's/import\.meta\.env[?]\.MODE/"DEVELOPMENT".toLowerCase()/' src/*.ts src/*/*.ts
+          sed -i~ 's/"test:ci":.*,$/"test:ci": "jest",/' package.json
+      - name: Test ${{ matrix.react }}
+        run: |
+          pnpm add -D react@${{ matrix.react }} react-dom@${{ matrix.react }}
+          pnpm test:ci

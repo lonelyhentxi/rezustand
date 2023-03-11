@@ -1,0 +1,26 @@
+name: Lint and Type
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+          cache: pnpm
+      - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+      - run: pnpm install --frozen-lockfile --check-files
+      - run: cd examples/demo && pnpm install --frozen-lockfile --check-files
+      - name: Prettier
+        run: pnpm prettier:ci
+      - name: Lint
+        run: pnpm eslint:ci
+      - name: Type
+        run: pnpm pretest
