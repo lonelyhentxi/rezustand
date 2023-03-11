@@ -1,5 +1,5 @@
-import { easyImmer, easyStoreContext } from "rezustand";
-import { createStore } from "zustand";
+import { easyImmer, easyStoreContext } from 'rezustand';
+import { createStore } from 'zustand';
 
 const createAppStore = () =>
   createStore(
@@ -12,22 +12,22 @@ const createAppStore = () =>
             const { a } = this.get();
 
             this.set((s) => {
-              s.a = a + 1
+              s.a = a + 1;
             });
           },
           getInitialProps: async () => {},
           prepareClientData: async () => {
             this.methods.incA();
-          }
+          },
         };
-      }
+      },
     })
   );
 
 const {
   useContextStore: useAppStore,
   StoreContext: AppStoreContext,
-  StoreProvider: AppStoreProvider
+  StoreProvider: AppStoreProvider,
 } = easyStoreContext(createAppStore);
 
 export { useAppStore, createAppStore, AppStoreContext, AppStoreProvider };

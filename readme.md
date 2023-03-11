@@ -17,9 +17,9 @@ npm install rezustand
 In `appStore.ts`:
 
 ```typescript
-import { easyImmer, easyStoreContext } from "./rezustand";
-import type { EasyInferStoreTypes } from "./rezustand";
-import { createStore } from "zustand/esm";
+import { easyImmer, easyStoreContext } from './rezustand';
+import type { EasyInferStoreTypes } from './rezustand';
+import { createStore } from 'zustand/esm';
 
 const createAppStore = () =>
   createStore(
@@ -35,9 +35,9 @@ const createAppStore = () =>
           },
           getInitialProps: async () => {
             this.methods.incA();
-          }
+          },
         };
-      }
+      },
     })
   );
 
@@ -46,7 +46,7 @@ export type AppStoreTypes = EasyInferStoreTypes<typeof createAppStore>;
 const {
   useContextStore: useAppStore,
   StoreContext: AppStoreContext,
-  StoreProvider: AppStoreProvider
+  StoreProvider: AppStoreProvider,
 } = easyStoreContext(createAppStore);
 
 export { useAppStore, createAppStore, AppStoreContext, AppStoreProvider };
@@ -55,8 +55,8 @@ export { useAppStore, createAppStore, AppStoreContext, AppStoreProvider };
 In `App.tsx`:
 
 ```tsx
-import "./styles.css";
-import { AppStoreProvider, useAppStore } from "./appStore";
+import './styles.css';
+import { AppStoreProvider, useAppStore } from './appStore';
 
 function ChildView() {
   const { a, incA } = useAppStore((s) => ({ a: s.a, incA: s.incA }));

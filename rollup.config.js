@@ -176,11 +176,11 @@ module.exports = function (args) {
   return [
     ...(c === 'index' ? [createDeclarationConfig(`src/${c}.ts`, 'dist')] : []),
     createCommonJSConfig(`src/${c}.ts`, `dist/${c}`, {
-      addModuleExport: {
-        index: {
-          default: 'index',
-        },
-      }[c],
+      // addModuleExport: {
+      //   index: {
+      //     default: 'index',
+      //   },
+      // }[c],
     }),
     createESMConfig(`src/${c}.ts`, `dist/esm/${c}.js`),
     createESMConfig(`src/${c}.ts`, `dist/esm/${c}.mjs`),
