@@ -103,6 +103,9 @@
     "type": "git",
     "url": "git+https://github.com/lonelyhentai/rezustand.git"
   },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  },
   "peerDependencies": {
     "immer": ">=9.0",
     "react": ">=16.8",
