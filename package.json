@@ -1,6 +1,6 @@
 {
   "name": "rezustand",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A toolset making zustand easy to use.",
   "author": "Yeheng Zhou",
   "license": "MIT",
@@ -108,7 +108,7 @@
   },
   "peerDependencies": {
     "immer": ">=9.0",
-    "react": ">=7.0",
+    "react": ">=18.0",
     "zustand": ">4.0"
   },
   "keywords": [
@@ -140,7 +140,6 @@
     "@rollup/plugin-terser": "^0.4.0",
     "@rollup/plugin-typescript": "^11.0.0",
     "@testing-library/react": "^14.0.0",
-    "@types/jest": "^29.4.0",
     "@types/node": "^18.15.0",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",

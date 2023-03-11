@@ -1,4 +1,4 @@
-import { AppStoreProvider, useAppStore } from "./appStore";
+import { AppStoreProvider, useAppStore } from './appStore';
 
 function ChildView() {
   const { a, incA } = useAppStore((s) => ({ a: s.a, incA: s.incA }));

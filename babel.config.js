@@ -1,6 +1,6 @@
 module.exports = (api, targets) => {
   // https://babeljs.io/docs/en/config-files#config-function-api
-  const isTestEnv = api.env('test')
+  const isTestEnv = api.env('test');
 
   return {
     babelrc: false,
@@ -24,5 +24,5 @@ module.exports = (api, targets) => {
       ],
       ['@babel/plugin-transform-typescript', { isTSX: true }],
     ],
-  }
-}
+  };
+};

@@ -17,9 +17,9 @@ jobs:
       - uses: pnpm/action-setup@v2
         with:
           version: 7
+
       - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
       - run: pnpm install
-      - run: cd examples/demo && pnpm install
       - name: Prettier
         run: pnpm prettier:ci
       - name: Lint
