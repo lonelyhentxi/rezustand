@@ -1,8 +1,8 @@
 # REZUSTAND
 
-[![Build Status](https://img.shields.io/github/actions/workflow/status/lonelyhentai/rezustand/lint-and-type.yml?branch=main&style=flat&colorA=000000&colorB=000000)](https://github.com/lonelyhentai/rezustand/actions?query=workflow%3ALint)
-[![Build Size](https://img.shields.io/bundlephobia/minzip/rezustand?label=bundle%20size&style=flat&colorA=000000&colorB=000000)](https://bundlephobia.com/result?p=rezustand)
-[![Version](https://img.shields.io/npm/v/rezustand?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/rezustand)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/lonelyhentai/rezustand/lint-and-type.yml?branch=main&style=flat)](https://github.com/lonelyhentai/rezustand/actions?query=workflow%3ALint)
+[![Build Size](https://img.shields.io/bundlephobia/minzip/rezustand?label=bundle%20size&style=flat)](https://bundlephobia.com/result?p=rezustand)
+[![Version](https://img.shields.io/npm/v/rezustand?style=flat)](https://www.npmjs.com/package/rezustand)
 
 A toolset making zustand easy to use!
 
