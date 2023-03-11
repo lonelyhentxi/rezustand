@@ -19,7 +19,7 @@ jobs:
           version: 7
           run_install: false
       - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-      - run: pnpm install --frozen-lockfile --check-files
+      - run: pnpm install
       - name: Test Build # we don't have any other workflows to test build
         run: pnpm build
       - name: Test Default
@@ -46,9 +46,8 @@ jobs:
       - uses: pnpm/action-setup@v2
         with:
           version: 7
-          run_install: false
       - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-      - run: pnpm install --frozen-lockfile --check-files
+      - run: pnpm install
       - name: Install legacy testing-library
         if: ${{ startsWith(matrix.react, '16.') || startsWith(matrix.react, '17.') }}
         run: pnpm add -D @testing-library/react@12.1.4

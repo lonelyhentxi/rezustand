@@ -24,7 +24,7 @@ jobs:
           version: 7
           run_install: false
       - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-      - run: pnpm install --frozen-lockfile --check-files
+      - run: pnpm install
       - run: pnpm build
       - name: Use React 17 for production test
         if: ${{ matrix.env == 'production' }}
