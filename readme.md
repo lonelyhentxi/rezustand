@@ -4,7 +4,7 @@
 [![Build Size](https://img.shields.io/bundlephobia/minzip/rezustand?label=bundle%20size&style=flat&colorA=000000&colorB=000000)](https://bundlephobia.com/result?p=rezustand)
 [![Version](https://img.shields.io/npm/v/rezustand?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/rezustand)
 
-A toolset making zustand easy to use.
+A toolset making zustand easy to use!
 
 ## Installation
 
