@@ -9,9 +9,16 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
       - uses: pnpm/action-setup@v2
         with:
-          version: 7
-      - uses: preactjs/compressed-size-action@v2
+          version: latest
+          run_install: false
+      # cause of preactjs/compressed-size-action@v2 installation bugs
+      - run: rm pnpm-lock.yaml
+      - uses: lonelyhentxi/compressed-size-action@5636e14bc77e8c7c41132e0e4ed2122ad3a9746c
         with:
+          install-script: "pnpm install --no-frozen-lockfile"
           repo-token: "${{ secrets.GITHUB_TOKEN }}"

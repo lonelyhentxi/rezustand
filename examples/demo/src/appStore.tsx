@@ -1,39 +1,20 @@
-# REZUSTAND
-
-[![Build Status](https://img.shields.io/github/actions/workflow/status/lonelyhentai/rezustand/lint-and-type.yml?branch=main&style=flat)](https://github.com/lonelyhentai/rezustand/actions?query=workflow%3ALint)
-[![Build Size](https://img.shields.io/bundlephobia/minzip/rezustand?label=bundle%20size&style=flat)](https://bundlephobia.com/result?p=rezustand)
-[![Version](https://img.shields.io/npm/v/rezustand?style=flat)](https://www.npmjs.com/package/rezustand)
-
-A toolset making zustand easy to use!
-
-## Installation
-
-```shell
-npm install rezustand
-```
-
-## Example
-
-In `appStore.ts`:
-
-```typescript
 import {
   easyCreator,
   easyNSSliceCreator,
   easyStoreContext,
-  storeApiSubscribeWithSelector
-} from "./rezustand";
+  storeApiSubscribeWithSelector,
+} from 'rezustand';
 import type {
-  EasyInferStoreTypes,
+  EasyInferCreateSliceStateType,
   EasyInferNSSliceStateType,
-  EasyInferCreateSliceStateType
-} from "./rezustand";
-import { createStore } from "zustand";
-import { immer } from "zustand/middleware/immer";
+  EasyInferStoreTypes,
+} from 'rezustand';
+import { createStore } from 'zustand';
+import { immer } from 'zustand/middleware/immer';
 
 const InitProps = {
   a: 1,
-  b: 2
+  b: 2,
 };
 
 const createAppSlice = () => {
@@ -53,9 +34,9 @@ const createAppSlice = () => {
         },
         getInitialProps: async () => {
           this.methods.incA();
-        }
+        },
       };
-    }
+    },
   });
 };
 
@@ -84,18 +65,18 @@ const createListSlice = <NS extends string>(
               console.log(`${this.ns} list data changed`, listData);
             },
             {
-              fireImmediately: true
+              fireImmediately: true,
             }
           );
-        }
+        },
       };
-    }
+    },
   });
 };
 
 type AppState = EasyInferCreateSliceStateType<typeof createAppSlice> &
   EasyInferNSSliceStateType<
-    "listA",
+    'listA',
     EasyInferCreateSliceStateType<typeof createListSlice>
   >;
 
@@ -103,7 +84,7 @@ const createAppStore = () =>
   createStore<AppState>()(
     immer((set, get, api) => ({
       ...createAppSlice()(set, get, api),
-      ...createListSlice("listA", InitProps)(set, get, api)
+      ...createListSlice('listA', InitProps)(set, get, api),
     }))
   );
 
@@ -114,49 +95,7 @@ export type AppStoreTypes = EasyInferStoreTypes<
 const {
   useContextStore: useAppStore,
   StoreContext: AppStoreContext,
-  StoreProvider: AppStoreProvider
+  StoreProvider: AppStoreProvider,
 } = easyStoreContext(createAppStore);
 
 export { useAppStore, createAppStore, AppStoreContext, AppStoreProvider };
-```
-
-In `App.tsx`:
-
-```tsx
-import "./styles.css";
-import { AppStoreProvider, useAppStore } from "./appStore";
-import { useEffect } from "react";
-
-function ChildView() {
-  const { a, incA, subscribeListChange, getListData } = useAppStore((s) => ({
-    a: s.a,
-    incA: s.incA,
-    subscribeListChange: s.listA.subscribeListChange,
-    getListData: s.listA.getListData
-  }));
-
-  useEffect(() => {
-    const unsub = subscribeListChange();
-    getListData();
-    return unsub;
-  }, [subscribeListChange, getListData]);
-
-  return (
-    <>
-      <h1>Hello CodeSandbox</h1>
-      <h2>a: {a}</h2>
-      <button onClick={() => incA()}>add a</button>
-    </>
-  );
-}
-
-export default function App() {
-  return (
-    <AppStoreProvider>
-      <div className="App">
-        <ChildView />
-      </div>
-    </AppStoreProvider>
-  );
-}
-```
