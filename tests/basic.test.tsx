@@ -36,7 +36,11 @@ it('works with simple counter', async () => {
             this.set((s) => void (s.a = a + 1));
           },
           getInitialProps: async () => {
-            this.methods.incA();
+            this.get().incA();
+          },
+          testApi: () => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const api = this.api;
           },
         };
       },
@@ -59,6 +63,14 @@ it('works with simple counter', async () => {
             this.set((s) => {
               s.listData = [...prevList, prevS.ext.a];
             });
+          },
+          testApi: () => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const api = this.api;
+            // can not set ext
+            // api.setState({
+            //   ext: {},
+            // });
           },
           subscribeListChange: () => {
             storeApiSubscribeWithSelector(

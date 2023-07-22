@@ -3,7 +3,15 @@ import type { Context, PropsWithChildren, Provider } from 'react';
 import type { Draft } from 'immer';
 import { useStore } from 'zustand';
 import type { Mutate, StoreApi, StoreMutatorIdentifier } from 'zustand';
-import type { ExtractState, IsVoid } from './type-utils';
+import type {
+  ExtractMutateMs,
+  ExtractState,
+  IsVoid,
+  ReplaceMutateState,
+  SetStateInternal,
+} from './type-utils';
+
+export type { ExtractState, ExtractMutateMs, ReplaceMutateState };
 
 export function rezustandUnimplemented(): never {
   const error = Object.assign(new Error('rezustand unimplemented'), {
@@ -32,7 +40,7 @@ export type StoreEasyCreateOptions<
 } & ThisType<{
   get: () => Readonly<T>;
   set: StoreEasySetStateType<T>;
-  api: M;
+  api: ReplaceMutateState<T, M>;
   /**
    * @deprecated use `get`
    */
@@ -83,7 +91,9 @@ export type NSSliceEasyCreateOptions<
   ns: NS;
   get: () => Readonly<T & { ext: EXT }>;
   set: StoreEasySetStateType<T>;
-  api: M;
+  api: ReplaceMutateState<T & { ext: EXT }, M> & {
+    setState: SetStateInternal<T>;
+  };
 }>;
 
 export function easyNSSliceCreator<

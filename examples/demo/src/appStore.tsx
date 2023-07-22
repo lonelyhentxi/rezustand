@@ -57,6 +57,14 @@ const createListSlice = <NS extends string>(
             s.listData = [...prevList, prevS.ext.a];
           });
         },
+        testApi: () => {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const api = this.api;
+          // can not set ext
+          // api.setState({
+          //   ext: {},
+          // });
+        },
         subscribeListChange: () => {
           storeApiSubscribeWithSelector(
             this.api,
