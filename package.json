@@ -1,6 +1,6 @@
 {
   "name": "rezustand",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "A toolset making zustand easy to use.",
   "author": "Yeheng Zhou",
   "license": "MIT",
