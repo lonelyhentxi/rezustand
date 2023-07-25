@@ -59,14 +59,14 @@ it('works with simple counter', async () => {
             const { b } = this.get();
 
             this.set((s) => void (s.b = b + 1));
-          }
+          },
         };
       },
       ext,
     });
   };
 
-  type ExtSliceState = EasyInferCreateSliceStateType<typeof createExtSlice>
+  type ExtSliceState = EasyInferCreateSliceStateType<typeof createExtSlice>;
 
   const createListSlice = <NS extends string>(
     ns: NS,
@@ -111,14 +111,11 @@ it('works with simple counter', async () => {
   };
 
   type ListSliceState = EasyInferNSSliceStateType<
-  'listA',
+    'listA',
     EasyInferCreateSliceStateType<typeof createListSlice>
   >;
 
-  type AppState = 
-    AppSliceState &
-    ExtSliceState &
-    ListSliceState;
+  type AppState = AppSliceState & ExtSliceState & ListSliceState;
 
   const createAppStore = () =>
     createStore<AppState>()(
@@ -128,7 +125,7 @@ it('works with simple counter', async () => {
           ...appSlice,
           ...createExtSlice(appSlice)(set, get, api),
           ...createListSlice('listA', InitProps)(set, get, api),
-        }
+        };
       })
     );
 
@@ -141,14 +138,18 @@ it('works with simple counter', async () => {
   } = easyStoreContext(createAppStore);
 
   function ChildView() {
-    const { a, b, incA, subscribeListChange, getListData, extIncB } = useAppStore((s) => ({
-      a: s.a,
-      b: s.b,
-      incA: s.incA,
-      extIncB: s.extIncB,
-      subscribeListChange: s.listA.subscribeListChange,
-      getListData: s.listA.getListData,
-    }), shallow);
+    const { a, b, incA, subscribeListChange, getListData, extIncB } =
+      useAppStore(
+        (s) => ({
+          a: s.a,
+          b: s.b,
+          incA: s.incA,
+          extIncB: s.extIncB,
+          subscribeListChange: s.listA.subscribeListChange,
+          getListData: s.listA.getListData,
+        }),
+        shallow
+      );
 
     useEffect(() => {
       const unsub = subscribeListChange();
