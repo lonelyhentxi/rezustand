@@ -3,6 +3,7 @@ import { afterEach, expect, it, jest } from '@jest/globals';
 import { fireEvent, render } from '@testing-library/react';
 import { createStore } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
+import { shallow } from 'zustand/shallow';
 import {
   EasyInferCreateSliceStateType,
   EasyInferNSSliceStateType,
@@ -25,6 +26,7 @@ it('works with simple counter', async () => {
     a: 1,
     b: 2,
   };
+
   const createAppSlice = () => {
     return easyCreator({
       setup() {
@@ -46,6 +48,25 @@ it('works with simple counter', async () => {
       },
     });
   };
+
+  type AppSliceState = EasyInferCreateSliceStateType<typeof createAppSlice>;
+
+  const createExtSlice = (ext: AppSliceState) => {
+    return easyCreator({
+      setup() {
+        return {
+          extIncB: () => {
+            const { b } = this.get();
+
+            this.set((s) => void (s.b = b + 1));
+          },
+        };
+      },
+      ext,
+    });
+  };
+
+  type ExtSliceState = EasyInferCreateSliceStateType<typeof createExtSlice>;
 
   const createListSlice = <NS extends string>(
     ns: NS,
@@ -89,18 +110,23 @@ it('works with simple counter', async () => {
     });
   };
 
-  type AppState = EasyInferCreateSliceStateType<typeof createAppSlice> &
-    EasyInferNSSliceStateType<
-      'listA',
-      EasyInferCreateSliceStateType<typeof createListSlice>
-    >;
+  type ListSliceState = EasyInferNSSliceStateType<
+    'listA',
+    EasyInferCreateSliceStateType<typeof createListSlice>
+  >;
+
+  type AppState = AppSliceState & ExtSliceState & ListSliceState;
 
   const createAppStore = () =>
     createStore<AppState>()(
-      immer((set, get, api) => ({
-        ...createAppSlice()(set, get, api),
-        ...createListSlice('listA', InitProps)(set, get, api),
-      }))
+      immer((set, get, api) => {
+        const appSlice = createAppSlice()(set, get, api);
+        return {
+          ...appSlice,
+          ...createExtSlice(appSlice)(set, get, api),
+          ...createListSlice('listA', InitProps)(set, get, api),
+        };
+      })
     );
 
   type AppStoreTypes = EasyInferStoreTypes<ReturnType<typeof createAppStore>>;
@@ -112,12 +138,18 @@ it('works with simple counter', async () => {
   } = easyStoreContext(createAppStore);
 
   function ChildView() {
-    const { a, incA, subscribeListChange, getListData } = useAppStore((s) => ({
-      a: s.a,
-      incA: s.incA,
-      subscribeListChange: s.listA.subscribeListChange,
-      getListData: s.listA.getListData,
-    }));
+    const { a, b, incA, subscribeListChange, getListData, extIncB } =
+      useAppStore(
+        (s) => ({
+          a: s.a,
+          b: s.b,
+          incA: s.incA,
+          extIncB: s.extIncB,
+          subscribeListChange: s.listA.subscribeListChange,
+          getListData: s.listA.getListData,
+        }),
+        shallow
+      );
 
     useEffect(() => {
       const unsub = subscribeListChange();
@@ -128,8 +160,10 @@ it('works with simple counter', async () => {
     return (
       <>
         <h1>Hello CodeSandbox</h1>
-        <h2>count: {a}</h2>
+        <h2>count a: {a}</h2>
+        <h3>count b: {b}</h3>
         <button onClick={() => incA()}>add a</button>
+        <button onClick={() => extIncB()}>ext add b</button>
       </>
     );
   }
@@ -149,11 +183,18 @@ it('works with simple counter', async () => {
       <App />
     </>
   );
-  await findByText('count: 1');
+  await findByText('count a: 1');
 
   fireEvent.click(getByText('add a'));
 
-  expect(await findByText('count: 2')).toBeTruthy();
+  expect(await findByText('count a: 2')).toBeTruthy();
+
+  await findByText('count b: 2');
+
+  fireEvent.click(getByText('ext add b'));
+
+  expect(await findByText('count b: 3')).toBeTruthy();
+
   expect(consoleSpy).toHaveBeenCalledTimes(2);
   expect(consoleSpy.mock.calls[0]).toEqual(['listA list data changed', []]);
   expect(consoleSpy.mock.calls[1]).toEqual(['listA list data changed', [1]]);
