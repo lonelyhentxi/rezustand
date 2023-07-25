@@ -22,12 +22,12 @@ import {
   easyNSSliceCreator,
   easyStoreContext,
   storeApiSubscribeWithSelector
-} from "./rezustand";
+} from "rezustand";
 import type {
   EasyInferStoreTypes,
   EasyInferNSSliceStateType,
   EasyInferCreateSliceStateType
-} from "./rezustand";
+} from "rezustand";
 import { createStore } from "zustand";
 import { immer } from "zustand/middleware/immer";
 
@@ -41,23 +41,41 @@ const createAppSlice = () => {
     setup() {
       return {
         ...InitProps,
-        haha: () => {
-          const api = this.api;
-          const state = api.getState();
-          console.log(`haha + ${state.a}`);
-        },
         incA: () => {
           const { a } = this.get();
 
           this.set((s) => void (s.a = a + 1));
         },
         getInitialProps: async () => {
-          this.methods.incA();
+          this.get().incA();
+        },
+        testApi: () => {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const api = this.api;
         }
       };
     }
   });
 };
+
+type AppSliceState = EasyInferCreateSliceStateType<typeof createAppSlice>;
+
+const createExtSlice = (ext: AppSliceState) => {
+  return easyCreator({
+    setup() {
+      return {
+        extIncB: () => {
+          const { b } = this.get();
+
+          this.set((s) => void (s.b = b + 1));
+        }
+      };
+    },
+    ext
+  });
+};
+
+type ExtSliceState = EasyInferCreateSliceStateType<typeof createExtSlice>;
 
 const createListSlice = <NS extends string>(
   ns: NS,
@@ -76,6 +94,14 @@ const createListSlice = <NS extends string>(
             s.listData = [...prevList, prevS.ext.a];
           });
         },
+        testApi: () => {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const api = this.api;
+          // can not set ext
+          // api.setState({
+          //   ext: {},
+          // });
+        },
         subscribeListChange: () => {
           storeApiSubscribeWithSelector(
             this.api,
@@ -93,23 +119,26 @@ const createListSlice = <NS extends string>(
   });
 };
 
-type AppState = EasyInferCreateSliceStateType<typeof createAppSlice> &
-  EasyInferNSSliceStateType<
-    "listA",
-    EasyInferCreateSliceStateType<typeof createListSlice>
-  >;
+type ListSliceState = EasyInferNSSliceStateType<
+  "listA",
+  EasyInferCreateSliceStateType<typeof createListSlice>
+>;
+
+type AppState = AppSliceState & ExtSliceState & ListSliceState;
 
 const createAppStore = () =>
   createStore<AppState>()(
-    immer((set, get, api) => ({
-      ...createAppSlice()(set, get, api),
-      ...createListSlice("listA", InitProps)(set, get, api)
-    }))
+    immer((set, get, api) => {
+      const appSlice = createAppSlice()(set, get, api);
+      return {
+        ...appSlice,
+        ...createExtSlice(appSlice)(set, get, api),
+        ...createListSlice("listA", InitProps)(set, get, api)
+      };
+    })
   );
 
-export type AppStoreTypes = EasyInferStoreTypes<
-  ReturnType<typeof createAppStore>
->;
+type AppStoreTypes = EasyInferStoreTypes<ReturnType<typeof createAppStore>>;
 
 const {
   useContextStore: useAppStore,
@@ -126,14 +155,20 @@ In `App.tsx`:
 import "./styles.css";
 import { AppStoreProvider, useAppStore } from "./appStore";
 import { useEffect } from "react";
+import { shallow } from "zustand/shallow";
 
 function ChildView() {
-  const { a, incA, subscribeListChange, getListData } = useAppStore((s) => ({
-    a: s.a,
-    incA: s.incA,
-    subscribeListChange: s.listA.subscribeListChange,
-    getListData: s.listA.getListData
-  }));
+  const { a, b, incA, subscribeListChange, getListData, extIncB } = useAppStore(
+    (s) => ({
+      a: s.a,
+      b: s.b,
+      incA: s.incA,
+      extIncB: s.extIncB,
+      subscribeListChange: s.listA.subscribeListChange,
+      getListData: s.listA.getListData
+    }),
+    shallow
+  );
 
   useEffect(() => {
     const unsub = subscribeListChange();
@@ -144,8 +179,10 @@ function ChildView() {
   return (
     <>
       <h1>Hello CodeSandbox</h1>
-      <h2>a: {a}</h2>
+      <h2>count a: {a}</h2>
+      <h3>count b: {b}</h3>
       <button onClick={() => incA()}>add a</button>
+      <button onClick={() => extIncB()}>ext add b</button>
     </>
   );
 }
