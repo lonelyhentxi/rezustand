@@ -15,8 +15,8 @@ dependencies:
     specifier: ^18.2.0
     version: 18.2.0(react@18.2.0)
   rezustand:
-    specifier: ^0.1.4
-    version: 0.1.4(immer@9.0.19)(react@18.2.0)(zustand@4.3.6)
+    specifier: ^0.1.5
+    version: 0.1.5(immer@9.0.19)(react@18.2.0)(zustand@4.3.6)
   three:
     specifier: ^0.141.0
     version: 0.141.0
@@ -8597,8 +8597,8 @@ packages:
     engines: {iojs: '>=1.0.0', node: '>=0.10.0'}
     dev: true
 
-  /rezustand@0.1.4(immer@9.0.19)(react@18.2.0)(zustand@4.3.6):
-    resolution: {integrity: sha512-6kNHaWGKrVCGi6ORrNAiJ0KStxoAgBVKTM7UPc00Jh8cM9qoCy2wBrDtdXzRtdaKQ1Gn9mgT7bYsQtdKbnKbNQ==}
+  /rezustand@0.1.5(immer@9.0.19)(react@18.2.0)(zustand@4.3.6):
+    resolution: {integrity: sha512-gxl7OKJ/7lxUkLWeKQUxtv2/xbLYQIltdmgNP5ufReCes5H/PQDbvruhpkj6QY17VHY5nouvIM9AyAApB9JCNQ==}
     engines: {node: '>=12.7.0'}
     peerDependencies:
       immer: '>=9.0'
