@@ -1,4 +1,4 @@
-lockfileVersion: '6.0'
+lockfileVersion: '6.1'
 
 settings:
   autoInstallPeers: true
@@ -3363,7 +3363,7 @@ packages:
     dependencies:
       semver: 7.3.8
       shelljs: 0.8.5
-      typescript: 5.2.0-dev.20230715
+      typescript: 5.2.0-dev.20230725
     dev: true
 
   /electron-to-chromium@1.4.328:
@@ -6485,8 +6485,8 @@ packages:
     hasBin: true
     dev: true
 
-  /typescript@5.2.0-dev.20230715:
-    resolution: {integrity: sha512-HGxy4eGjQ+n36knjF2SR2qiHPlOYkNKh/xZrhxlJTP1kznazQBYe/vZySoEntvGGLYuzc+O/H6D+TkcxrjcTUQ==}
+  /typescript@5.2.0-dev.20230725:
+    resolution: {integrity: sha512-ckVbPpSTdPA/Fxnrq1/mzO+LgzA64VPjm6YvV/axwZKgxviVHiUy0VvKS5EGBOpgFBwCNuN+ir24KIBGYWQCgQ==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: true

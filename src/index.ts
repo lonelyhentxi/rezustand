@@ -34,27 +34,30 @@ export type StoreEasySetStateType<T> = {
 
 export type StoreEasyCreateOptions<
   T,
-  M extends Mutate<StoreApi<any>, [StoreMutatorIdentifier, unknown][]>
+  EXT = {},
+  M extends Mutate<StoreApi<any>, [StoreMutatorIdentifier, unknown][]> = StoreApi<EXT & T>
 > = {
   setup(): T;
+  ext?: EXT,
 } & ThisType<{
-  get: () => Readonly<T>;
-  set: StoreEasySetStateType<T>;
-  api: ReplaceMutateState<T, M>;
+  get: () => Readonly<EXT & T>;
+  set: StoreEasySetStateType<EXT & T>;
+  api: ReplaceMutateState<EXT & T, M>,
   /**
    * @deprecated use `get`
    */
   methods: {
-    readonly [key in keyof T as T[key] extends (...args: any[]) => any
-      ? key
-      : never]: T[key];
+    readonly [key in keyof EXT as EXT[key] extends (...args: any[]) => any ? key : never]: EXT[key];
+  } & {
+    readonly [key in keyof T as T[key] extends (...args: any[]) => any ? key : never]: T[key];
   };
 }>;
 
 export function easyCreator<
-  T,
-  M extends Mutate<StoreApi<any>, [StoreMutatorIdentifier, unknown][]>
->(createOptions: StoreEasyCreateOptions<T, M>) {
+  T, 
+  EXT = {}, 
+  M extends Mutate<StoreApi<any>, [StoreMutatorIdentifier, unknown][]> = StoreApi<EXT & T>
+>(createOptions: StoreEasyCreateOptions<T, EXT, M>) {
   return (set: any, get: any, api: any): T => {
     const obj = {
       get,
@@ -85,7 +88,7 @@ export type NSSliceEasyCreateOptions<
   > = StoreApi<T & { ext: EXT }>
 > = {
   ns: NS;
-  ext: EXT;
+  ext?: EXT;
   setup(): T;
 } & ThisType<{
   ns: NS;
