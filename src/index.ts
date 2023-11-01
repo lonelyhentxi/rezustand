@@ -185,10 +185,13 @@ export function easyNSSliceCreator<
             );
           },
           subscribe(listener: (state: T, prevState: T) => void): () => void {
-            const prevState = getState();
+            let prevState = getState();
             return api.subscribe(() => {
               const currState = getState();
-              listener(currState, prevState);
+              // before listener snapshot prevState, prevent listener throw error
+              const prevStateSnapshot = prevState;
+              prevState = currState
+              listener(currState, prevStateSnapshot);
             });
           },
           destory() {
